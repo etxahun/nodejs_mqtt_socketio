@@ -17,12 +17,12 @@ First of all install the required packages:
 
 ## Configuration
 
-1. Rename "server.js.sample" to "server.js":
+1. Rename **server.js.sample** to **server.js**:
 ```shell
  $ mv server.js.sample server.js
 ```
 
-2. Edit the server.js file according to your deployment:
+2. Edit the **server.js** file according to your deployment:
 ```javascript
 // In case of MQTTS (TLS):
  var connectOptions = {
@@ -63,8 +63,8 @@ Run the backend:
 ```shell
  $ npm start
 ```
-Then, open a web browser and type the following URL: localhost:4200
-In case that the client is connected from a remote host, modify the "public/index.html" file in order to set your backend IP settings.
+Then, open a web browser and type the following URL: [http://localhost:4200](http://localhost:4200)
+In case that the client is connected from a remote host, modify the **public/index.html** file in order to set your backend IP settings.
 
 ## Contributing
 
