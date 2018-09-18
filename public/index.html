@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <style type="text/css">
+    .tg {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+      border-color: black;
+    }
+
+    .tg th {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+      border-color: black;
+    }
+
+    .tg .tg-8ty1 {
+      font-size: 36px;
+      font-family: Tahoma, Geneva, sans-serif !important;
+      ;
+      color: #000000;
+      border-color: #000000;
+      text-align: left;
+      vertical-align: top
+    }
+
+    .tg .tg-8dyn {
+      font-weight: bold;
+      font-size: 36px;
+      font-family: Tahoma, Geneva, sans-serif !important;
+      ;
+      background-color: #3166ff;
+      color: #000000;
+      border-color: #000000;
+      text-align: center;
+      vertical-align: top
+    }
+
+    .tg .tg-glx1 {
+      font-size: 36px;
+      font-family: Tahoma, Geneva, sans-serif !important;
+      ;
+      color: #000000;
+      border-color: #000000;
+      text-align: center;
+      vertical-align: top
+    }
+  </style>
+  <script>
+    var socket = io.connect('http://localhost:4200');
+    socket.on('connect', function(data) {
+      socket.emit('join', 'Hello World from browser client');
+    });
+
+    socket.on('messages', function(data) {
+      console.log(data);
+      $('#ltr').html(data.ltr);
+      $('#rtl').html(data.rtl);
+      $('#temp').html(data.temp);
+    });
+  </script>
+</head>
+
+<body>
+  <!-- <h1>Hello World!</h1> -->
+  <table class="tg">
+    <tr>
+      <th class="tg-8dyn">Atributo</th>
+      <th class="tg-8dyn">Valor</th>
+    </tr>
+    <tr>
+      <td class="tg-8ty1">LTR [Left-to-Right]</td>
+      <td id="ltr" class="tg-glx1"></td>
+    </tr>
+    <tr>
+      <td class="tg-8ty1">RTL [Right-to-Left]</td>
+      <td id="rtl" class="tg-glx1"></td>
+    </tr>
+    <tr>
+      <td class="tg-8ty1">Internal Temperature</td>
+      <td id="temp" class="tg-glx1"></td>
+    </tr>
+  </table>
+</body>
+
+</html>

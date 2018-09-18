@@ -1,0 +1,86 @@
+// FileSystem
+var fs = require('fs');
+
+// MQTT
+var mqtt = require('mqtt');
+// In case of MQTTS (TLS):
+// var connectOptions = {
+//     host: "<MQTT_server_IP_or_hostname>",
+//     port: 8883,
+//     protocol: "mqtts",
+//     keepalive: 10,
+//     clientId: "test_client_01",
+//     protocolId: "MQTT",
+//     protocolVersion: 4,
+//     clean: true,
+//     reconnectPeriod: 2000,
+//     connectTimeout: 2000,
+//     cert: fs.readFileSync("ca.crt"),
+//     rejectUnauthorized: false,
+// };
+
+// In case of MQTT:
+var connectOptions = {
+    host: "<MQTT_server_IP_or_hostname>",
+    port: 1883,
+    protocol: "mqtt",
+    keepalive: 10,
+    clientId: "test_client_01",
+    protocolId: "MQTT",
+    protocolVersion: 4,
+    clean: true,
+    reconnectPeriod: 2000,
+    connectTimeout: 2000
+};
+
+// Express HTTP Server =================================================
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+
+// Socket.io ===========================================================
+var io = require('socket.io')(server);
+
+app.get('/', function(req, res,next) {
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+// MQTT ================================================================
+var client = mqtt.connect(connectOptions);
+var topic="<topic_to_subscribe>";
+
+io.on('connection', function(socket) {
+    console.log('Client connected...');
+
+    socket.on('join', function(data) {
+        console.log('Browser says: ' + data);
+        socket.emit('messages', 'Hello from server');
+        client.subscribe(topic);
+    });
+
+    //handle incoming messages
+    client.on('message',(topic, message, packet) => {
+      // console.log("Topic: " + topic + " | Message: " + message);
+      var raw_decoded = (JSON.parse(message.toString())).object;
+      console.log(raw_decoded);
+      console.log("Topic: " + topic + " | Message: " + String(raw_decoded));
+      socket.emit('messages', raw_decoded);
+    });
+});
+
+client.on("connect",() => {
+  if (client.connected) {
+    client.publish("test", "I'm connected!");
+    console.log("MQTT client connected to " + connectOptions.host + ":" + connectOptions.port)
+  }
+})
+
+//handle errors
+client.on("error",(error) => {
+  console.log("Can't connect" + error);
+  process.exit(1)
+});
+
+server.listen(4200, () => {
+  console.log('Server listening on *:4200');
+});
